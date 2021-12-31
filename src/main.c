@@ -2,35 +2,35 @@
 #include <portaudio.h>
 #include <math.h>
 
+
 #define SAMPLE_RATE (44100)
 #define PI (3.14159256)
+#define BUFFER_SIZE (512)
 
-
-double samples = 0;
 
 typedef struct {
-    float left_phase;
-    float right_phase;
-} paTestData;
+    int trackID;
+    float trackLevel;
+    float *data;
+} TrackSoundData;
 
 
-static paTestData data;
+typedef struct {
+    TrackSoundData *tracks;
+    unsigned long int frame;
+} paCallbackData;
 
 
 int pacallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData){
-    paTestData *data = (paTestData*)userData;  
+    paCallbackData *data = (paCallbackData*)userData;  
     float *out = (float*)outputBuffer;
-    (void) inputBuffer; //Prevent unused variable warning.
     unsigned int i;
     
     for(i=0; i<framesPerBuffer; i++) {
-    samples++;
-    data->left_phase = sin((samples/44100)*50*sin(samples/441)*PI*2);
-    data->right_phase = sin((samples/44100)*50*sin(samples/441)*PI*2);
-    *out++ = data->left_phase;
-    *out++ = data->right_phase;
+    data->frame++;
+    *out++ = data->tracks->data[data->frame];
+    *out++ = data->tracks->data[data->frame];
    }
-
     return 0;
 }
 
@@ -43,9 +43,20 @@ int main () {
     if(err != paNoError) goto error;
     printf("initiated!\n");
     
+    float frame = 0.0;
+    float track0data[220500];
+    for (int i=0; i<220500; i++) {
+        frame++;
+        track0data[i] = sin((frame/44100)*800);
+    }
+       
+    TrackSoundData track = {1, 1.0, track0data};
+    paCallbackData data; 
+    data.tracks = &track;
+
     PaStream *stream;
     //intitiates portaudio stream
-    err = Pa_OpenDefaultStream(&stream, 0, 2, paFloat32, SAMPLE_RATE, 256, pacallback, &data);
+    err = Pa_OpenDefaultStream(&stream, 0, 2, paFloat32, SAMPLE_RATE, BUFFER_SIZE, pacallback, &data);
     if(err != paNoError) goto error;
     printf("stream initiated!\n");
 
@@ -53,8 +64,12 @@ int main () {
     err = Pa_StartStream(stream);
     if(err != paNoError) goto error;
     printf("playing sound!\n");
+    PaTime starttime = Pa_GetStreamTime(stream);
 
-    Pa_Sleep(5000);
+    while (1) {
+    PaTime time = Pa_GetStreamTime(stream);
+    if(time-starttime >= 5) break;
+    }
 
     //stops the stream
     err = Pa_StopStream(stream);
