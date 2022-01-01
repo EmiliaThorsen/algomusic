@@ -1,3 +1,0 @@
-/home/emilia/Documents/algomusic/build/CMakeFiles/program.dir
-/home/emilia/Documents/algomusic/build/CMakeFiles/edit_cache.dir
-/home/emilia/Documents/algomusic/build/CMakeFiles/rebuild_cache.dir

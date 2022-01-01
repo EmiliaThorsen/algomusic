@@ -1,1 +1,0 @@
-/usr/bin/cc -lm CMakeFiles/program.dir/src/main.c.o -o program  -lportaudio 
