@@ -1,7 +1,7 @@
 # algomusic
 A daw based on synthesising using mathematical equations and sequencing with a tracker style interface in terminal.
 
-this project is curently **VERY** early, and it can curently only play one sound for a select amount of time.
+This project is curently **VERY** early, and it can curently only play pre programmed compiled sound waves for a set time.
 
 You can see my current plans on this Trello board:
 https://github.com/EmiliaThorsen/algomusic/blob/main/README.md
