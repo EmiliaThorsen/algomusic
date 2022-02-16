@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <portaudio.h>
 #include <math.h>
-
+#include "audioMath.h"
 
 #define SAMPLE_RATE (44100)
 #define PI (3.14159256)
@@ -37,7 +37,7 @@ int pacallback(const void *inputBuffer, void *outputBuffer, unsigned long frames
             leftChanel += data->data[track].data[data->frame]*data->data[track].trackLevel;
             rightChanel += data->data[track].data[data->frame]*data->data[track].trackLevel;
         }
-
+        
         *out++ = leftChanel/data->tracks;
         *out++ = rightChanel/data->tracks;
    }
@@ -55,23 +55,19 @@ int main () {
     
     float frame = 0.0;
     float track0data[220500];
-    float track1data[220500];
     for (int i=0; i<220500; i++) {
         frame++;
-        track0data[i] = sin((frame/44100)*1600);
-        track1data[i] = sin((frame/44100)*3200);
+        track0data[i] = triwave(frame/44100*100);
     }
 
     TrackSoundData track0 = {0, 1.0, track0data};
-    TrackSoundData track1 = {1, 1.0, track1data};
 
-    TrackSoundData tracks[2];
+    TrackSoundData tracks[1];
     tracks[0] = track0;
-    tracks[1] = track1;
 
     paCallbackData data; 
     data.data = tracks;
-    data.tracks = 2;
+    data.tracks = 1;
 
     //intitiates portaudio stream
     PaStream *stream;
