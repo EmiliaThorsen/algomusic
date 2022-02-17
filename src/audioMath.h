@@ -1,3 +1,5 @@
+#include <complex.h>
+
 //function for calculating a rpn function into an array of floats
 float *calculateFunction(void *func, int start, int end);
 
@@ -8,5 +10,6 @@ float sawwave(float ang);
 float triwave(float ang);
 
 //usefull helper functions
-float cut(float value, float max, float min);
-
+float clamp(float value, float max, float min);
+void FFT(float _Complex buffer[], int size);
+void IFFT(float _Complex buffer[], int size);
