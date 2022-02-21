@@ -22,7 +22,6 @@ float triwave(float ang){
     return(fabs(fmod(ang*4, 4)-2)-1);
 }
 
-//usefull helper functions
 float clamp(float value, float max, float min) {
     const float t = value < min ? min : value;
     return t > max ? max : t;
@@ -54,4 +53,22 @@ void IFFT(compf buffer[], int size) {
 	for (int i = 0; i < size; i++) out[i] = buffer[i];
     compf precomp = 1.0/size * cexpf(I * 3.14159265 / size);
 	_fft(buffer, out, size, 1, precomp);
+}
+
+void multcompbuffers(compf buffer[], compf multiplier[], int size){
+    for (int i=0; i < size; i++) {
+        buffer[i] *= multiplier[i];
+    } 
+}
+
+void biquadfilter(float buffer[], int size, float b0, float b1, float b2, float a1, float a2){
+    float in[size];
+    for (int i=0; i < size; i++) {
+        in[i] = buffer[i];
+    }
+    buffer[0] = b0*in[0];
+    buffer[1] = b0*in[1]+b1*in[0]-a1*buffer[0];
+    for (int i=2; i < size; i++) {
+        buffer[i] = b0*in[i]+b1*in[i-1]+b2*in[i-2]-a1*buffer[i-1]-a2*buffer[i-2];
+    }
 }

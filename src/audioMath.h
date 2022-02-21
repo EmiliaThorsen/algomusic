@@ -13,3 +13,6 @@ float triwave(float ang);
 float clamp(float value, float max, float min);
 void FFT(float _Complex buffer[], int size);
 void IFFT(float _Complex buffer[], int size);
+void multcompbuffers(float _Complex buffer[], float _Complex multiplier[], int size);
+
+void biquadfilter(float buffer[], int size, float b0, float b1, float b2, float a1, float a2);
