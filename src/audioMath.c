@@ -22,9 +22,17 @@ float triwave(float ang){
     return(fabs(fmod(ang*4, 4)-2)-1);
 }
 
+//usefull helper functions
 float clamp(float value, float max, float min) {
     const float t = value < min ? min : value;
     return t > max ? max : t;
+}
+
+float frequency(float sample, int samplerate, float frequency){
+    return sample/samplerate*frequency;
+}
+float note(float sample, int samplerate, float note){
+    return sample/samplerate*440*pow(2, (note-49)/12);
 }
 
 typedef float complex compf;
@@ -61,7 +69,7 @@ void multcompbuffers(compf buffer[], compf multiplier[], int size){
     } 
 }
 
-void biquadfilter(float buffer[], int size, float b0, float b1, float b2, float a1, float a2){
+void biquadfilter(float buffer[], int size, float b0, float b1, float b2, float a0, float a1, float a2){
     float in[size];
     for (int i=0; i < size; i++) {
         in[i] = buffer[i];
@@ -69,6 +77,6 @@ void biquadfilter(float buffer[], int size, float b0, float b1, float b2, float 
     buffer[0] = b0*in[0];
     buffer[1] = b0*in[1]+b1*in[0]-a1*buffer[0];
     for (int i=2; i < size; i++) {
-        buffer[i] = b0*in[i]+b1*in[i-1]+b2*in[i-2]-a1*buffer[i-1]-a2*buffer[i-2];
+        buffer[i] = (b0*in[i]+b1*in[i-1]+b2*in[i-2]-a1*buffer[i-1]-a2*buffer[i-2])/a0;
     }
 }

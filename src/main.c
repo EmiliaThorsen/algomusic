@@ -53,14 +53,27 @@ int main () {
     if(err != paNoError) goto error;
     printf("initiated!\n");
     
+    float sequance[10]; 
+    sequance[0] = 50.0; 
+    sequance[1] = 48.0; 
+    sequance[2] = 47.0; 
+    sequance[3] = 50.0; 
+    sequance[4] = 52.0; 
+    sequance[5] = 50.0; 
+    sequance[6] = 48.0; 
+    sequance[7] = 47.0; 
+    sequance[8] = 50.0; 
+    sequance[9] = 52.0;
+
     float frame = 0.0;
     float track0data[220500];
     for (int i=0; i<220500; i++) {
         frame++;
-        track0data[i] = triwave(frame/44100*100);
+        int idk = round(frame/22050);
+        track0data[i] = triwave(note(frame, SAMPLE_RATE, sequance[idk]))+triwave(note(frame, SAMPLE_RATE, sequance[idk]+4))+triwave(note(frame, SAMPLE_RATE, sequance[idk]+7));
     }
 
-    TrackSoundData track0 = {0, 1.0, track0data};
+    TrackSoundData track0 = {0, 0.05, track0data};
 
     TrackSoundData tracks[1];
     tracks[0] = track0;
