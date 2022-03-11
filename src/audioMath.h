@@ -1,7 +1,5 @@
 #include <complex.h>
 
-//function for calculating a rpn function into an array of floats
-float *calculateFunction(void *func, int start, int end);
 
 //the difrent types of waves
 float sinwave(float ang);
@@ -9,10 +7,12 @@ float sqrwave(float ang);
 float sawwave(float ang);
 float triwave(float ang);
 
+
 //usefull helper functions
 float clamp(float value, float max, float min);
 float frequency(float sample, int samplerate, float frequency);
 float note(float sample, int samplerate, float note);
+
 
 //signal procesing functions
 void FFT(float _Complex buffer[], int size);
