@@ -1,45 +1,40 @@
 #include <stdio.h>
 #include <portaudio.h>
 #include <math.h>
-#include "audioMath.h"
-
+#include "./math/audioMath.h"
+#include "./math/computer.h"
 
 #define SAMPLE_RATE (44100)
 #define PI (3.14159256)
 #define BUFFER_SIZE (512)
 
 
-//the data structure for the calculated audio track data
 typedef struct {
-    int trackID; //id of the track
-    float trackLevel; //the mixer level of the track
-    float *data; //audio data of the track
-} TrackSoundData;
-
-
-//the data passed into pacallback
-typedef struct {
-    TrackSoundData *data; //array of audio data tracks
-    unsigned long int sample; //the frame in the audio tracks the player is in
+    struct trackData *data; //audio tracks
+    soundFormat format; //audio format
+    unsigned int frame; //current playhead position
+    unsigned int sample;
     int tracks; //the amount of tracks the mixer has to combine
 } paCallbackData;
 
 
 int pacallback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *userData) {
-    paCallbackData *data = (paCallbackData*)userData;
+    paCallbackData *inData = (paCallbackData*)userData;
     float *out = (float*)outputBuffer;
-    
+
     for(int i = 0; i < framesPerBuffer; i++) {
-        data->sample++;
+        inData->sample++;
         float leftChanel = 0.0;
         float rightChanel = 0.0;
-        for(int track = 0; track < data->tracks; track++) { //combine all tracks
-            leftChanel += data->data[track].data[data->sample] * data->data[track].trackLevel;
-            rightChanel += data->data[track].data[data->sample] * data->data[track].trackLevel;
+        for(int track = 0; track < inData->tracks; track++) { //combine all tracks
+            leftChanel += 
+                inData->data[track].audio[inData->sample] * 
+                inData->data[track].level;
+            rightChanel += inData->data[track].audio[inData->sample] * inData->data[track].level;
         }
         //normalize output to not make speekers go kaboom
-        *out++ = leftChanel / data->tracks;
-        *out++ = rightChanel / data->tracks;
+        *out++ = leftChanel / inData->tracks;
+        *out++ = rightChanel / inData->tracks;
    }
    return 0;
 }
@@ -50,33 +45,29 @@ int main() {
     PaError err;
     err = Pa_Initialize();
     if(err != paNoError) {goto error;}
-    
+
+
+    soundFormat format;
+    format.frameSize = SAMPLE_RATE;
+    format.sampleRate = SAMPLE_RATE;
+    format.stereo = 1;
+
+    float temp = 400.0;
+    instruction inst[4];
+    inst[0].type = 0; inst[0].ID=4;
+    inst[1].type = 1; inst[1].data.f=&temp;
+    inst[2].type = 0; inst[2].ID=3;
+    inst[3].type = 0; inst[3].ID=2;
+    inst[4].type = 0; inst[4].ID=5;
+
+    float *test = computeSoundData(inst, 4, format, 0, 5);
+
     //temporary testing code
-    float sequance[10]; 
-    sequance[0] = 50.0; 
-    sequance[1] = 48.0; 
-    sequance[2] = 47.0; 
-    sequance[3] = 50.0; 
-    sequance[4] = 52.0; 
-    sequance[5] = 50.0; 
-    sequance[6] = 48.0; 
-    sequance[7] = 47.0; 
-    sequance[8] = 50.0; 
-    sequance[9] = 52.0;
-
-    float frame = 0.0;
-    float track0data[220500];
-    for (int i = 0; i < 220500; i++) {
-        frame++;
-        int idk = round(frame/22050);
-        track0data[i] = triwave(note(frame, SAMPLE_RATE, sequance[idk])) + triwave(note(frame, SAMPLE_RATE, sequance[idk] + 4)) + triwave(note(frame, SAMPLE_RATE, sequance[idk] + 7));
-    }
-
-    TrackSoundData track0 = {0, 0.05, track0data};
-    TrackSoundData tracks[1];
+    struct trackData tracks[1];
+    struct trackData track0 = {0, 0.05, test};
     tracks[0] = track0;
 
-    paCallbackData paData; 
+    paCallbackData paData;
     paData.data = tracks;
     paData.tracks = 1;
 
