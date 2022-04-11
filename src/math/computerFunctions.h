@@ -1,5 +1,6 @@
 #include <complex.h>
-#include "computer.h"
+#include "sharedTypes.h"
+#include "../structure.h"
 
 
 int addSound(mixBuff *, mixBuff *, int, soundFormat, int, int);

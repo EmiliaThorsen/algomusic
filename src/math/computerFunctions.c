@@ -1,5 +1,6 @@
-#include "computerFunctions.h"
 #include "audioMath.h"
+#include "sharedTypes.h"
+#include "../structure.h"
 
 
 int addSound(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format, int startFrame, int frames) {

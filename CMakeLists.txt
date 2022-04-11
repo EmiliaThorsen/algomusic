@@ -4,7 +4,7 @@ project(algomusic)
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
-add_executable(program ./src/main.c ./src/math/audioMath.c ./src/math/computer.c ./src/math/computerFunctions.c)
+add_executable(program ./src/playBack/playBack.c ./src/main.c ./src/math/audioMath.c ./src/math/computer.c ./src/math/computerFunctions.c)
 
 find_package(portaudio)
 
