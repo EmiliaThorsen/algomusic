@@ -1,0 +1,3 @@
+[submodule "src/c-TUI-framework"]
+	path = src/c-TUI-framework
+	url = git@github.com:EmiliaThorsen/c-TUI-framework.git
