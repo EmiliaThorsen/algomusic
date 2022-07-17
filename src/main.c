@@ -5,6 +5,7 @@
 #include "./playBack/playBack.h"
 #include "./ui/ui.h"
 #include <unistd.h>
+#include "./controll.h"
 
 #define SAMPLE_RATE (44100)
 
@@ -16,7 +17,8 @@ int main() {
     format.stereo = 1;
 
     startTUI();
-    while (1) {
+    setControllVariable(running, 1);
+    while (getControllVariable(running)) {
         updateTUI();
         usleep(50000);
     }

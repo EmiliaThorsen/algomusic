@@ -4,8 +4,10 @@ typedef struct {
     int stereo;
 } soundFormat;
 
+
 struct trackData {
     int trackID;
     float level;
     float *audio;
 };
+

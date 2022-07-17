@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "./keystrokes.h"
-
+#include "../controll.h"
 
 void space() {
     printf("space detected uwu!\n");
@@ -11,7 +11,7 @@ void space() {
 
 
 void quit() {
-    printf("q detected uwu!\n");
+    setControllVariable(running, 0);
 }
 
 
