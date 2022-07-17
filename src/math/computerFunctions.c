@@ -2,6 +2,7 @@
 #include "sharedTypes.h"
 #include "../structure.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
 int addSound(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format, int startFrame, int frames) {
@@ -9,6 +10,7 @@ int addSound(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format, in
         stack[stackPos-2].f[i] += stack[stackPos-1].f[i];
     }
     printf("addSound\n");
+    free(stack[stackPos-1].f);
     return stackPos-1;
 }
 
@@ -18,6 +20,7 @@ int subSound(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format, in
         stack[stackPos-2].f[i] -= stack[stackPos-1].f[i];
     }
     printf("subSound\n");
+    free(stack[stackPos-1].f);
     return stackPos-1;
 }
 
@@ -27,6 +30,7 @@ int scaleSound(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format, 
         stack[stackPos-2].f[i] *= *stack[stackPos-1].f;
     }
     printf("scaleSound\n");
+    free(stack[stackPos-1].f);
     return stackPos-1;
 }
 
@@ -40,7 +44,7 @@ int insertArray(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format,
 
 int insertRange(mixBuff *stack, mixBuff *data, int stackPos, soundFormat format, int startFrame, int frames) {
     int frameSize = format.frameSize;
-    float range[frameSize*frames];
+    float *range = malloc(sizeof(float) * frameSize * frames);
     for (int i = 0; i < frameSize * frames; i++) {
         range[i] = (float)(i + startFrame * frameSize) / (float)format.sampleRate;
     }

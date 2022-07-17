@@ -17,13 +17,13 @@ int sawWave(mixBuff *, mixBuff *, int, soundFormat, int, int);
 
 
 static int (*operators[]) (mixBuff *, mixBuff *, int, soundFormat, int, int) = {
-    [0] = addSound,
-    [1] = subSound,
-    [2] = scaleSound,
-    [3] = insertArray,
-    [4] = insertRange,
-    [5] = sineWave,
-    [6] = triangleWave,
-    [7] = sqareWave,
-    [8] = sawWave
+    addSound,
+    subSound,
+    scaleSound,
+    insertArray,
+    insertRange,
+    sineWave,
+    triangleWave,
+    sqareWave,
+    sawWave
 };

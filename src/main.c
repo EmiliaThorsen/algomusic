@@ -4,10 +4,24 @@
 #include "./math/computer.h"
 #include "./playBack/playBack.h"
 #include "./ui/ui.h"
+#include <stdlib.h>
 #include <unistd.h>
 #include "./controll.h"
 
 #define SAMPLE_RATE (44100)
+
+
+enum {
+    addsound,
+    subsound,
+    scalesound,
+    insertarray,
+    insertrange,
+    sinewave,
+    trianglewave,
+    sqarewave,
+    sawwave
+};
 
 
 int main() {
@@ -16,9 +30,12 @@ int main() {
     format.sampleRate = SAMPLE_RATE;
     format.stereo = 1;
 
-    startTUI();
+
     initGlobalVariables();
     setGlobalVariable(running, 1);
+
+
+    startTUI();
     while (getGlobalVariable(running)) {
         updateTUI();
         usleep(50000);
@@ -27,23 +44,25 @@ int main() {
 
 
     //temporary teting code
-    float temp = 600.0;
-    float temp2 = 1000.0;
+    float *temp = malloc(sizeof(float));
+    float *temp2 = malloc(sizeof(float));
+    *temp = 600.0;
+    *temp2 = 1000.0;
     instruction inst[11];
-    inst[0].type = 0; inst[0].ID=4;
-    inst[1].type = 1; inst[1].data.f=&temp;
-    inst[2].type = 0; inst[2].ID=3;
-    inst[3].type = 0; inst[3].ID=2;
-    inst[4].type = 0; inst[4].ID=5;
-    inst[5].type = 0; inst[5].ID=4;
-    inst[6].type = 1; inst[6].data.f=&temp2;
-    inst[7].type = 0; inst[7].ID=3;
-    inst[8].type = 0; inst[8].ID=2;
-    inst[9].type = 0; inst[9].ID=5;
-    inst[10].type = 0; inst[10].ID=0;
+    inst[0].type = 0; inst[0].ID=insertrange;
+    inst[1].type = 1; inst[1].data.f=temp;
+    inst[2].type = 0; inst[2].ID=insertarray;
+    inst[3].type = 0; inst[3].ID=scalesound;
+    inst[4].type = 0; inst[4].ID=sinewave;
+    inst[5].type = 0; inst[5].ID=insertrange;
+    inst[6].type = 1; inst[6].data.f=temp2;
+    inst[7].type = 0; inst[7].ID=insertarray;
+    inst[8].type = 0; inst[8].ID=scalesound;
+    inst[9].type = 0; inst[9].ID=sinewave;
+    inst[10].type = 0; inst[10].ID=addsound;
     float *test = computeSoundData(inst, 11, format, 0, 6);
     struct trackData tracks[1];
-    struct trackData track0 = {0, 0.5, test};
+    struct trackData track0 = {0, 0.05, test};
     tracks[0] = track0;
 
     initPa(format);
@@ -53,6 +72,7 @@ int main() {
     stopPlayBack();
     terminatePa();
 
+    free(test);
     freeGlobalVariables();
     return 0;
 }
