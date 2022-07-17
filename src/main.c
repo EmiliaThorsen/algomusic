@@ -17,8 +17,9 @@ int main() {
     format.stereo = 1;
 
     startTUI();
-    setControllVariable(running, 1);
-    while (getControllVariable(running)) {
+    initGlobalVariables();
+    setGlobalVariable(running, 1);
+    while (getGlobalVariable(running)) {
         updateTUI();
         usleep(50000);
     }
@@ -51,5 +52,7 @@ int main() {
     while (getCurrentPlaybackTime() < 5) {}
     stopPlayBack();
     terminatePa();
+
+    freeGlobalVariables();
     return 0;
 }

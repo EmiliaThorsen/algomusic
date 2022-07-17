@@ -1,14 +1,25 @@
 #include "./controll.h"
+#include <stdlib.h>
 
 
-int globalVariables[flagCount];
+int *globalVariables;
 
 
-void setControllVariable(enum flags flag, int data) {
+void initGlobalVariables() {
+    globalVariables = malloc(sizeof(int) * flagCount);
+}
+
+
+void setGlobalVariable(enum flags flag, int data) {
     globalVariables[flag] = data;
 }
 
 
-int getControllVariable(enum flags flag) {
+int getGlobalVariable(enum flags flag) {
     return globalVariables[flag];
+}
+
+
+void freeGlobalVariables() {
+    free(globalVariables);
 }

@@ -5,5 +5,7 @@ enum flags {
 };
 
 
-void setControllVariable(enum flags, int data);
-int getControllVariable(enum flags);
+void setGlobalVariable(enum flags, int);
+int getGlobalVariable(enum flags);
+void initGlobalVariables();
+void freeGlobalVariables();

@@ -11,7 +11,7 @@ void space() {
 
 
 void quit() {
-    setControllVariable(running, 0);
+    setGlobalVariable(running, 0);
 }
 
 
