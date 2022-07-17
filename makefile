@@ -13,7 +13,7 @@ libFlags := -lm -lportaudio
 #make file instructions ahead, generaly don't touch
 
 #file finding stuffs
-cFiles := $(wildcard $(sourceDir)/*/*.c) $(wildcard $(sourceDir)/*.c)
+cFiles := $(wildcard $(sourceDir)/*/*.c) $(wildcard $(sourceDir)/*.c) $(wildcard $(sourceDir)/*/*/*.c)
 OBJ := $(patsubst $(sourceDir)/%.c, $(buildDir)/%.o, $(cFiles))
 
 #make obj files in build from c files in src
@@ -26,7 +26,10 @@ $(target): ${OBJ}
 	$(CC) -o $(target) $(OBJ) $(CFLAGS) $(libFlags)
 
 #usefull stuffs
-.PHONY: all run clean
+.PHONY: all run clean test
+
+test:
+	echo $(OBJ)
 
 all: $(target)
 

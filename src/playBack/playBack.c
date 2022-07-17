@@ -26,9 +26,7 @@ int pacallback(const void *inputBuffer, void *outputBuffer, unsigned long frames
         float leftChanel = 0.0;
         float rightChanel = 0.0;
         for(int track = 0; track < inData->tracks; track++) { //combine all tracks
-            leftChanel += 
-                inData->data[track].audio[inData->sample] * 
-                inData->data[track].level;
+            leftChanel += inData->data[track].audio[inData->sample] * inData->data[track].level;
             rightChanel += inData->data[track].audio[inData->sample] * inData->data[track].level;
         }
         //normalize output to not make speekers go kaboom
@@ -98,7 +96,7 @@ int startPlayBack(unsigned int sample) {
     err = Pa_StartStream(stream);
     if(err != paNoError) {goto error;}
     startTime = Pa_GetStreamTime(stream);
-    
+
     return 1;
 
  error:
@@ -111,7 +109,7 @@ int stopPlayBack() {
     PaError err;
     err = Pa_StopStream(stream);
     if(err != paNoError) {goto error;}
-    
+
     return 1;
 
  error:
@@ -124,4 +122,4 @@ int setTracks(struct trackData *data, int tracks) {
     paData.data = data;
     paData.tracks = tracks;
     return 1;
-}  
+}

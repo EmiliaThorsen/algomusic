@@ -2,13 +2,25 @@
 #include <complex.h>
 #include "audioMath.h"
 
-//the difrent types of waves:
 
-//one-line queen :sunglasses:
-float sinwave(float ang) {return(sin(ang * 6.283185307));}
-float sqrwave(float ang) {return(2 * (fmod(ang + 0.5, 1) >= 0.5) - 1);}
-float sawwave(float ang) {return(fmod(ang * 2 + 1, 2) - 1);}
-float triwave(float ang) {return(fabs(fmod(ang * 4, 4) - 2) - 1);}
+//the difrent types of waves:
+float sinwave(float ang) {
+    ang -= (int)ang;
+    float a = (ang - 1) * (ang - 0.5);
+    return 20 * ang * a + 50 * ang * a * (ang - 0.205) * (ang - 0.795) * (ang * (ang - 1) - 0.91);
+}
+
+
+float sqrwave(float ang) {return((int)(2 * ang + 1) % 2 - 0.5);}
+
+
+float sawwave(float ang) {return((ang - (int)ang) * 2 - 1);}
+
+
+float triwave(float ang) {
+    float temp = (ang - (int)(ang - 0.25) - 0.25);
+    return((temp * 2 - 1) * ((temp > 0.5) * 2 - 1));
+}
 
 
 //usefull helper functions:

@@ -3,7 +3,8 @@
 #include <math.h>
 #include "./math/computer.h"
 #include "./playBack/playBack.h"
-
+#include "./ui/ui.h"
+#include <unistd.h>
 
 #define SAMPLE_RATE (44100)
 
@@ -14,8 +15,16 @@ int main() {
     format.sampleRate = SAMPLE_RATE;
     format.stereo = 1;
 
+    startTUI();
+    while (1) {
+        updateTUI();
+        usleep(50000);
+    }
+    quitTUI();
+
+
     //temporary teting code
-    float temp = 400.0;
+    float temp = 600.0;
     float temp2 = 1000.0;
     instruction inst[11];
     inst[0].type = 0; inst[0].ID=4;
@@ -31,7 +40,7 @@ int main() {
     inst[10].type = 0; inst[10].ID=0;
     float *test = computeSoundData(inst, 11, format, 0, 6);
     struct trackData tracks[1];
-    struct trackData track0 = {0, 0.005, test};
+    struct trackData track0 = {0, 0.5, test};
     tracks[0] = track0;
 
     initPa(format);
