@@ -23,3 +23,6 @@ int getGlobalVariable(enum flags flag) {
 void freeGlobalVariables() {
     free(globalVariables);
 }
+
+
+

@@ -1,4 +1,4 @@
-#include "../c-TUI-framework/src/cTUIframework.h"
+#include "../c-TUI-framework/cTUIFramework.h"
 #include "../config.h"
 #include <stdio.h>
 #include <stdlib.h>

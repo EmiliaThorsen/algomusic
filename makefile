@@ -6,7 +6,7 @@ buildDir := ./build
 sourceDir := ./src
 
 #compiler stuff
-CC := gcc
+CC := clang
 CFLAGS := -Wall -g
 libFlags := -lm -lportaudio
 
