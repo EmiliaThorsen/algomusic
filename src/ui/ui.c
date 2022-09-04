@@ -4,14 +4,50 @@
 #include "ui.h"
 #include "startMenu.h"
 #include "string.h"
+#include "stdbool.h"
 
-int updateRendering = 0;
+
 struct theme algomusicTheme;
 struct keystrokes currentAlgomusicKeyStrokes;
 
-int tabCount;
 int currentTab;
-struct screen screens[10];
+int screenCount;
+struct screen *screens[10];
+
+
+void *getDataFromId(int id) {
+    for (int screen = 0; screen < screenCount; screen++) {
+        if (screens[screen]->id == id) {
+            return(screens[screen]->data);
+        }
+    }
+    return(NULL);
+}
+
+
+void addNewWindow(struct screen *(*initer)(), int id) {
+    screens[screenCount] = initer();
+    screens[screenCount]->id = id;
+    screenCount++;
+}
+
+
+void removeWindow(int id) {
+    bool found = false;
+    for (int screen = 0; screen < screenCount; screen++) {
+        if (screens[screen]->id == id) {
+            free(screens[screen]->name);
+            free(screens[screen]->data);
+            free(screens[screen]);
+            found = true;
+            continue;
+        }
+        if (found) {
+            screens[screen - 1] = screens[screen];
+        }
+    }
+    screenCount--;
+}
 
 
 void startTUI() {
@@ -29,9 +65,8 @@ void startTUI() {
     algomusicTheme.bottomBarBorder = 0;
     setTheme(algomusicTheme);
 
-    tabCount = 1;
     currentTab = 0;
-    screens[0] = *startMenuScreenIniter();
+    addNewWindow(startMenuScreenIniter, 1);
 }
 
 
@@ -73,32 +108,31 @@ void updateTUI() {
 
     //main tab construction code
     setTab(currentTab);
-    struct tab tabs[tabCount];
-    for(int tab = 0; tab < tabCount; tab++) {
-        tabs[tab].name = screens[tab].name;
+    struct tab tabs[screenCount];
+    for(int tab = 0; tab < screenCount; tab++) {
+        tabs[tab].name = screens[tab]->name;
         if(tab == currentTab) {
-            struct container container;
-            screens[tab].maker(&container);
-            tabs[tab].content = &container;
-            printf("%i", tabs[tab].content->type);
+            struct container content;
+            tabs[tab].content = &content;
+            tabs[tab].content->content = screens[tab]->renderer;
+            tabs[tab].content->id = screens[tab]->id;
+            tabs[tab].content->type = 0;
         }
     }
-    TUIStruct.tabs = tabCount;
+    TUIStruct.tabs = screenCount;
     TUIStruct.tab = tabs;
 
     //render the struct
     renderTUI(TUIStruct);
-
-    //free all malloced data
-    for(int tab = 0; tab < tabCount; tab++) {
-        if(tab == currentTab) {
-            screens[tab].destroyer(tabs[tab].content);
-        }
-    }
 }
 
 
 void quitTUI() {
     destroyTUI();
     free(currentAlgomusicKeyStrokes.keystrokeArray);
+    for (int screen = 0; screen < screenCount; screen++) {
+        free(screens[screen]->data);
+        free(screens[screen]->name);
+        free(screens[screen]);
+    }
 }

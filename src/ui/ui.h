@@ -6,7 +6,13 @@ void quitTUI();
 
 
 struct screen {
-    void (*maker)(struct container *);
-    void (*destroyer)(struct container *);
+    char **(*renderer)(int, int, int);
     char *name;
+    int id;
+    void *data;
 };
+
+void *getDataFromId(int id);
+
+void addNewWindow(struct screen *(*initier)(), int id);
+void removeWindow(int id);
