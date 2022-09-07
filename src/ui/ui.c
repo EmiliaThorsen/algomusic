@@ -1,10 +1,11 @@
-#include "keystrokes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "ui.h"
 #include "startMenu.h"
 #include "string.h"
 #include "stdbool.h"
+#include "keystrokes.h"
+#include "../c-TUI-framework/cTUIFramework.h"
 
 
 struct theme algomusicTheme;
@@ -15,9 +16,15 @@ int screenCount;
 struct screen *screens[10];
 
 
+void switchTab(int tab) {
+    currentTab = tab;
+    updateKeystrokes(screens[currentTab]->screenKeystrokes, &currentAlgomusicKeyStrokes);
+}
+
+
 void *getDataFromId(int id) {
     for (int screen = 0; screen < screenCount; screen++) {
-        if (screens[screen]->id == id) {
+        if(screens[screen]->id == id) {
             return(screens[screen]->data);
         }
     }
@@ -25,9 +32,8 @@ void *getDataFromId(int id) {
 }
 
 
-void addNewWindow(struct screen *(*initer)(), int id) {
-    screens[screenCount] = initer();
-    screens[screenCount]->id = id;
+void addNewWindow(struct screen *(*initer)(int), int id) {
+    screens[screenCount] = initer(id);
     screenCount++;
 }
 
@@ -38,6 +44,8 @@ void removeWindow(int id) {
         if (screens[screen]->id == id) {
             free(screens[screen]->name);
             free(screens[screen]->data);
+            free(screens[screen]->screenKeystrokes->keystrokeArray);
+            free(screens[screen]->screenKeystrokes);
             free(screens[screen]);
             found = true;
             continue;
@@ -54,7 +62,7 @@ void startTUI() {
     initTUI();
 
     //defines keystrokes
-    currentAlgomusicKeyStrokes = generateKeystrokes();
+    generateKeystrokes(&currentAlgomusicKeyStrokes);
     setKeystrokes(currentAlgomusicKeyStrokes);
 
     //define the tui theme
@@ -65,8 +73,8 @@ void startTUI() {
     algomusicTheme.bottomBarBorder = 0;
     setTheme(algomusicTheme);
 
-    currentTab = 0;
     addNewWindow(startMenuScreenIniter, 1);
+    switchTab(0);
 }
 
 

@@ -1,6 +1,7 @@
-#include "ui.h"
 #include <stdlib.h>
 #include <string.h>
+#include "ui.h"
+#include "../c-TUI-framework/cTUIFramework.h"
 
 
 struct data {
@@ -31,22 +32,44 @@ char **contentRenderer(int height, int width, int id) {
         }
     }
     struct data *data = getDataFromId(id);
-    data->option++;
-    if (data->option == 'z') {
-        data->option = 'a';
-    }
-    content[15][15] = data->option;
+    content[15][data->option] = '#';
     return content;
 }
 
 
-struct screen *startMenuScreenIniter() {
+void keystrokeJ(int id) {
+    struct data *data = getDataFromId(id);
+    data->option++;
+}
+
+
+void keystrokeK(int id) {
+    struct data *data = getDataFromId(id);
+    data->option--;
+}
+
+
+struct screen *startMenuScreenIniter(int id) {
     struct screen *screen = malloc(sizeof(struct screen));
     struct data *data = malloc(sizeof(struct data));
     screen->renderer = contentRenderer;
-    data->option = 'a';
+    data->option = 10;
+    struct keystroke *keystrokes = malloc(sizeof(struct keystroke) * 2);
+    keystrokes[0].key = 'j';
+    keystrokes[0].type = 0;
+    keystrokes[0].id = id;
+    keystrokes[0].function = keystrokeJ;
+    keystrokes[1].key = 'k';
+    keystrokes[1].type = 0;
+    keystrokes[1].id = id;
+    keystrokes[1].function = keystrokeK;
+    struct keystrokes *keys = malloc(sizeof(struct keystrokes));
+    screen->screenKeystrokes = keys;
+    screen->screenKeystrokes->keystrokeArray = keystrokes;
+    screen->screenKeystrokes->keystorkes = 2;
     screen->data = data;
     screen->name = malloc(sizeof(char) * 9);
     strcpy(screen->name, "mainMenu");
+    screen->id = id;
     return screen;
 }

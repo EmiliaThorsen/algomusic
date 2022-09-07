@@ -1,11 +1,11 @@
 struct keyConfig {
     char inputs;
-    void (*action)();
+    void (*action)(int);
 };
 
 
-void space();
-void quit();
+void space(int);
+void quit(int);
 
 
 int configs = 2;

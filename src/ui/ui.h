@@ -1,5 +1,3 @@
-#include "../c-TUI-framework/cTUIFramework.h"
-
 void startTUI();
 void updateTUI();
 void quitTUI();
@@ -10,6 +8,7 @@ struct screen {
     char *name;
     int id;
     void *data;
+    struct keystrokes *screenKeystrokes;
 };
 
 void *getDataFromId(int id);
