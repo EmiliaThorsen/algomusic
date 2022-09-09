@@ -30,15 +30,19 @@ int main() {
     format.sampleRate = SAMPLE_RATE;
     format.stereo = 1;
 
-    initGlobalVariables();
+    initControllSystem();
     setGlobalVariable(running, 1);
 
+    //main program loop
     startTUI();
+    int event;
     while (getGlobalVariable(running)) {
         updateTUI();
+        handleEvents();
         usleep(50000);
     }
     quitTUI();
+
 
     //temporary teting code
     float *temp = malloc(sizeof(float));
