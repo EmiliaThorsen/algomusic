@@ -5,10 +5,6 @@
 #include "./keystrokes.h"
 #include "../controll.h"
 
-void space(int id) {
-    printf("space detected uwu!\n");
-}
-
 
 void quit(int id) {
     setGlobalVariable(running, 0);

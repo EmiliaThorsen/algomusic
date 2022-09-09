@@ -30,10 +30,8 @@ int main() {
     format.sampleRate = SAMPLE_RATE;
     format.stereo = 1;
 
-
     initGlobalVariables();
     setGlobalVariable(running, 1);
-
 
     startTUI();
     while (getGlobalVariable(running)) {
@@ -41,7 +39,6 @@ int main() {
         usleep(50000);
     }
     quitTUI();
-
 
     //temporary teting code
     float *temp = malloc(sizeof(float));

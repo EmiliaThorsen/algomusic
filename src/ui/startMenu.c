@@ -9,6 +9,13 @@ struct data {
 };
 
 
+void _writeStr(char **content, int x, int y, char *str) {
+    for(int ch=0; ch < strlen(str); ch++) {
+        content[y][x +ch] = str[ch];
+    }
+}
+
+
 char **contentRenderer(int height, int width, int id) {
     char **content = initWindowContent(height, width, ' ');
     if(width > 90 && height > 15) {
@@ -31,8 +38,13 @@ char **contentRenderer(int height, int width, int id) {
             }
         }
     }
+
+    _writeStr(content, 7, 17, "start New Project");
+    _writeStr(content, 7, 19, "open old Project (not implemented yet)");
     struct data *data = getDataFromId(id);
-    content[15][data->option] = '#';
+    if(data->option < 1) data->option = 2;
+    if(data->option > 2) data->option = 1;
+    content[data->option * 2 + 15][5] = '#';
     return content;
 }
 
@@ -49,11 +61,22 @@ void keystrokeK(int id) {
 }
 
 
+void keystrokeSelect(int id) {
+    struct data *data = getDataFromId(id);
+    if(data->option == 1) {
+        //implement this
+    } else if (data->option == 2) {
+        //implement this
+    } else {
+        //implement error handler
+    }
+}
+
 struct screen *startMenuScreenIniter(int id) {
     struct screen *screen = malloc(sizeof(struct screen));
     struct data *data = malloc(sizeof(struct data));
     screen->renderer = contentRenderer;
-    data->option = 10;
+    data->option = 1;
     struct keystroke *keystrokes = malloc(sizeof(struct keystroke) * 2);
     keystrokes[0].key = 'j';
     keystrokes[0].type = 0;
@@ -63,13 +86,17 @@ struct screen *startMenuScreenIniter(int id) {
     keystrokes[1].type = 0;
     keystrokes[1].id = id;
     keystrokes[1].function = keystrokeK;
+    keystrokes[2].key = ' ';
+    keystrokes[2].type = 0;
+    keystrokes[2].id = id;
+    keystrokes[2].function = keystrokeSelect;
     struct keystrokes *keys = malloc(sizeof(struct keystrokes));
     screen->screenKeystrokes = keys;
     screen->screenKeystrokes->keystrokeArray = keystrokes;
     screen->screenKeystrokes->keystorkes = 2;
     screen->data = data;
-    screen->name = malloc(sizeof(char) * 9);
-    strcpy(screen->name, "mainMenu");
+    screen->name = malloc(sizeof(char) * 10);
+    strcpy(screen->name, "start menu");
     screen->id = id;
     return screen;
 }

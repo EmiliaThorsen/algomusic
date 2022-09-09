@@ -4,12 +4,10 @@ struct keyConfig {
 };
 
 
-void space(int);
 void quit(int);
 
 
-int configs = 2;
+int configs = 1;
 struct keyConfig keyConfigs[] = {
-    {' ', space},
     {'q', quit}
 };
