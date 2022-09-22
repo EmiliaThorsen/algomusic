@@ -3,6 +3,7 @@
 #include <math.h>
 #include "./math/computer.h"
 #include "./playBack/playBack.h"
+#include "./playBack/mixer.h"
 #include "./ui/ui.h"
 #include <stdlib.h>
 #include <unistd.h>
@@ -34,17 +35,17 @@ int main() {
     setGlobalVariable(running, 1);
 
     //main program loop
-    startTUI();
-    int event;
-    while (getGlobalVariable(running)) {
-        updateTUI();
-        handleEvents();
-        usleep(50000);
-    }
-    quitTUI();
-
+  //startTUI();
+  //while (getGlobalVariable(running)) {
+  //    updateTUI();
+  //    handleEvents();
+  //    usleep(50000);
+  //}
+  //quitTUI();
 
     //temporary teting code
+    initMixer();
+
     float *temp = malloc(sizeof(float));
     float *temp2 = malloc(sizeof(float));
     *temp = 600.0;
@@ -62,12 +63,14 @@ int main() {
     inst[9].type = 0; inst[9].ID=sinewave;
     inst[10].type = 0; inst[10].ID=addsound;
     float *test = computeSoundData(inst, 11, format, 0, 6);
-    struct trackData tracks[1];
-    struct trackData track0 = {0, 0.05, test};
-    tracks[0] = track0;
+    setOutTrackSize(format.sampleRate * 6);
+    printf("outtrack size set");
+    int id = addNewTrack();
+    printf("added new track");
+    updateTrack(id, test, test);
+    printf("track updated");
 
     initPa(format);
-    setTracks(tracks, 1);
     startPlayBack(0);
     while (getCurrentPlaybackTime() < 5) {}
     stopPlayBack();

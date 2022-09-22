@@ -7,4 +7,4 @@ int getCurrentPlaybackTime(); //get the current time the player is on in seconds
 int startPlayBack(unsigned int sample); //start playing at a specific sample
 int stopPlayBack(); //stop playing
 
-int setTracks(struct trackData *data, int tracks); //set the tracks that should be played and their data
+int setTracks(float *leftChanel, float *rightChanel); //sets the main playback data

@@ -4,11 +4,11 @@
 
 
 typedef struct {
-    struct trackData *data; //audio tracks
+    float *leftChanel;
+    float *rightChanel;
     soundFormat format; //audio format
     unsigned int frame; //current playhead position
     unsigned int sample;
-    int tracks; //the amount of tracks the mixer has to combine
 } paCallbackData;
 
 
@@ -23,17 +23,10 @@ int pacallback(const void *inputBuffer, void *outputBuffer, unsigned long frames
 
     for(int i = 0; i < framesPerBuffer; i++) {
         inData->sample++;
-        float leftChanel = 0.0;
-        float rightChanel = 0.0;
-        for(int track = 0; track < inData->tracks; track++) { //combine all tracks
-            leftChanel += inData->data[track].audio[inData->sample] * inData->data[track].level;
-            rightChanel += inData->data[track].audio[inData->sample] * inData->data[track].level;
-        }
-        //normalize output to not make speekers go kaboom
-        *out++ = leftChanel / inData->tracks;
-        *out++ = rightChanel / inData->tracks;
-   }
-   return 0;
+        *out++ = inData->leftChanel[inData->sample];
+        *out++ = inData->rightChanel[inData->sample];
+    }
+    return 0;
 }
 
 
@@ -118,8 +111,8 @@ int stopPlayBack() {
 }
 
 
-int setTracks(struct trackData *data, int tracks) {
-    paData.data = data;
-    paData.tracks = tracks;
+int setTracks(float *leftChanel, float *rightChanel) {
+    paData.leftChanel = leftChanel;
+    paData.rightChanel = rightChanel;
     return 1;
 }

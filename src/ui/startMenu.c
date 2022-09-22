@@ -72,12 +72,13 @@ void keystrokeSelect(int id) {
     }
 }
 
+
 struct screen *startMenuScreenIniter(int id) {
     struct screen *screen = malloc(sizeof(struct screen));
     struct data *data = malloc(sizeof(struct data));
     screen->renderer = contentRenderer;
     data->option = 1;
-    struct keystroke *keystrokes = malloc(sizeof(struct keystroke) * 2);
+    struct keystroke *keystrokes = malloc(sizeof(struct keystroke) * 3);
     keystrokes[0].key = 'j';
     keystrokes[0].type = 0;
     keystrokes[0].id = id;
