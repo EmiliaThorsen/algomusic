@@ -33,6 +33,7 @@ int main() {
 
     initControllSystem();
     setGlobalVariable(running, 1);
+    initMixer();
 
     //main program loop
   //startTUI();
@@ -44,13 +45,13 @@ int main() {
   //quitTUI();
 
     //temporary teting code
-    initMixer();
-
     float *temp = malloc(sizeof(float));
     float *temp2 = malloc(sizeof(float));
-    *temp = 600.0;
-    *temp2 = 1000.0;
-    instruction inst[11];
+    float *scaler = malloc(sizeof(float));
+    *temp = 400.0;
+    *temp2 = 600.0;
+    *scaler = 0.5;
+    instruction inst[14];
     inst[0].type = 0; inst[0].ID=insertrange;
     inst[1].type = 1; inst[1].data.f=temp;
     inst[2].type = 0; inst[2].ID=insertarray;
@@ -62,13 +63,14 @@ int main() {
     inst[8].type = 0; inst[8].ID=scalesound;
     inst[9].type = 0; inst[9].ID=sinewave;
     inst[10].type = 0; inst[10].ID=addsound;
-    float *test = computeSoundData(inst, 11, format, 0, 6);
+    inst[11].type = 1; inst[11].data.f=scaler;
+    inst[12].type = 0; inst[12].ID=insertarray;
+    inst[13].type = 0; inst[13].ID=scalesound;
+
+    float *test = computeSoundData(inst, 14, format, 0, 6);
     setOutTrackSize(format.sampleRate * 6);
-    printf("outtrack size set");
     int id = addNewTrack();
-    printf("added new track");
     updateTrack(id, test, test);
-    printf("track updated");
 
     initPa(format);
     startPlayBack(0);

@@ -38,7 +38,7 @@ int initPa(soundFormat format) {
     printf("portaudio initiated\n");
     paData.format = format;
     int chanels = 1;
-    if(format.stereo == 1) {chanels = 2;}
+    if(format.stereo == 1) chanels = 2;
 
     //open main audio stream
     err = Pa_OpenDefaultStream(&stream, 0, chanels, paFloat32, format.sampleRate, format.frameSize, pacallback, &paData);
