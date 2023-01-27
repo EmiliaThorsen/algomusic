@@ -13,9 +13,9 @@ struct track {
 
 
 struct track **trackData;
-int tracks;
-int trackBufferSize;
-int usedIds;
+int tracks = 0;
+int trackBufferSize = 1;
+int usedIds = 0;
 
 float *mainTrackLeft;
 float *mainTrackRight;
@@ -23,9 +23,6 @@ int outSamples;
 
 
 void initMixer() {
-    tracks = 0;
-    usedIds = 0;
-    trackBufferSize = 1;
     trackData = malloc(sizeof(struct track *));
     mainTrackLeft = malloc(sizeof(float));
     mainTrackRight = malloc(sizeof(float));

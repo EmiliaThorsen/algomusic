@@ -1,6 +1,9 @@
 enum flags {
     running,
     playing,
+    songLength,
+    sampleRate,
+    playHeadPos,
     flagCount
 };
 

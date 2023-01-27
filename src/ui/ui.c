@@ -40,8 +40,8 @@ void addNewWindow(struct screen *(*initer)(int), int id) {
 
 void removeWindow(int id) {
     bool found = false;
-    for (int screen = 0; screen < screenCount; screen++) {
-        if (screens[screen]->id == id) {
+    for(int screen = 0; screen < screenCount; screen++) {
+        if(screens[screen]->id == id) {
             free(screens[screen]->name);
             free(screens[screen]->data);
             free(screens[screen]->screenKeystrokes->keystrokeArray);
@@ -50,9 +50,7 @@ void removeWindow(int id) {
             found = true;
             continue;
         }
-        if (found) {
-            screens[screen - 1] = screens[screen];
-        }
+        if(found) screens[screen - 1] = screens[screen];
     }
     screenCount--;
 }
@@ -60,10 +58,6 @@ void removeWindow(int id) {
 
 void startTUI() {
     initTUI();
-
-    //defines keystrokes
-    generateKeystrokes(&currentAlgomusicKeyStrokes);
-    setKeystrokes(currentAlgomusicKeyStrokes);
 
     //define the tui theme
     algomusicTheme.splitBorders = 0;
@@ -73,6 +67,7 @@ void startTUI() {
     algomusicTheme.bottomBarBorder = 0;
     setTheme(algomusicTheme);
 
+    currentAlgomusicKeyStrokes.keystrokeArray = malloc(sizeof(struct keystroke));
     addNewWindow(startMenuScreenIniter, 1);
     switchTab(0);
 }

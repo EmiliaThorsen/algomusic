@@ -15,3 +15,5 @@ void *getDataFromId(int id);
 
 void addNewWindow(struct screen *(*initier)(), int id);
 void removeWindow(int id);
+
+void switchTab(int tab);
