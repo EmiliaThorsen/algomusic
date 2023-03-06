@@ -6,12 +6,14 @@
 #include "../c-TUI-framework/cTUIFramework.h"
 #include "commonTabFunctions.h"
 #include "../sequencer/secuanceStorage.h"
+#include "../sequencer/sharedSecuancerTypes.h"
 #include "../controll.h"
 
 struct mainMenuData {
     int selectedWindow;
     int sideBarSize;
     int selectedSection;
+    int selectedTrack;
 };
 
 
@@ -40,12 +42,28 @@ char **mainMenuContentRenderer(int height, int width, int id) {
         writeStr(content, 13, 2, timeString);
     }
 
-    writeStr(content, width - 13, 0, "level: 100%");
-    writeStr(content, width - 13, 1, "-----------");
-    writeStr(content, width - 13, 2, "#|");
-    writeStr(content, width - 13, 3, "#|");
+    //write section count
+    int sections = getSectionCount();
+    char sectionCountStr[14];
+    sprintf(sectionCountStr, "sections: %d", sections);
+    writeStr(content, 0, 6, sectionCountStr);
 
-
+    //draw sections
+    for(int section = 0; section < sections; section++) {
+        for (int x = 0; x < data->sideBarSize; x++) {
+            content[7 + section * 2][x] = '-';
+        }
+        struct sequencerSection *sectionData = getSection(section);
+        char sectionLength[30];
+        sprintf(sectionLength, "lengh: %dms, tracks: %d", sectionData->lengh * 1000 / getGlobalVariable(sampleRate), getSequanceTrackCount(sectionData));
+        writeStr(content, 2, 8 + section * 2, sectionLength);
+        if(section == data->selectedSection) {
+            content[8 + section * 2][0] = '>';
+        }
+    }
+    for (int x = 0; x < data->sideBarSize; x++) {
+        content[7 + sections * 2][x] = '-';
+    }
 
 
     return content;
@@ -62,9 +80,49 @@ void deleteSectionKeystroke(int id) {
 }
 
 
+void goDownSections(int id) {
+    struct mainMenuData *data = getDataFromId(id);
+    data->selectedSection += 1;
+    if(data->selectedSection > getSectionCount() - 1) data->selectedSection = 0;
+}
+
+
+void goUpSections(int id) {
+    struct mainMenuData *data = getDataFromId(id);
+    data->selectedSection -= 1;
+    if(data->selectedSection < 0) data->selectedSection = getSectionCount() - 1;
+}
+
+
+void goLeftTrack(int id) {
+    struct mainMenuData *data = getDataFromId(id);
+    data->selectedTrack += 1;
+}
+
+
+void goRightTrack(int id) {
+    struct mainMenuData *data = getDataFromId(id);
+    data->selectedTrack -= 1;
+}
+
+
+void addTrackKeystroke(int id) {
+    struct mainMenuData *data = getDataFromId(id);
+    struct sequencerSection *section = getSection(data->selectedSection);
+    addSequanceTrack(section);
+}
+
+
+void removeTrackKeystroke(int id) {
+    struct mainMenuData *data = getDataFromId(id);
+    struct sequencerSection *section = getSection(data->selectedSection);
+    removeSequanceTrack(section, data->selectedTrack);
+}
+
+
 struct screen *mainMenuScreenIniter(int id) {
     struct screen *screen = baseScreenBuilder("main menu", id, mainMenuContentRenderer);
-    struct keystroke *keystrokes = malloc(sizeof(struct keystroke) * 2);
+    struct keystroke *keystrokes = malloc(sizeof(struct keystroke) * 8);
     keystrokes[0].key = 'a';
     keystrokes[0].type = 0;
     keystrokes[0].id = id;
@@ -73,12 +131,38 @@ struct screen *mainMenuScreenIniter(int id) {
     keystrokes[1].type = 0;
     keystrokes[1].id = id;
     keystrokes[1].function = deleteSectionKeystroke;
+    keystrokes[2].key = 'j';
+    keystrokes[2].type = 0;
+    keystrokes[2].id = id;
+    keystrokes[2].function = goDownSections;
+    keystrokes[3].key = 'k';
+    keystrokes[3].type = 0;
+    keystrokes[3].id = id;
+    keystrokes[3].function = goUpSections;
+    keystrokes[4].key = 'h';
+    keystrokes[4].type = 0;
+    keystrokes[4].id = id;
+    keystrokes[4].function = goRightTrack;
+    keystrokes[5].key = 'l';
+    keystrokes[5].type = 0;
+    keystrokes[5].id = id;
+    keystrokes[5].function = goLeftTrack;
+    keystrokes[6].key = 't';
+    keystrokes[6].type = 0;
+    keystrokes[6].id = id;
+    keystrokes[6].function = addTrackKeystroke;
+    keystrokes[7].key = 'r';
+    keystrokes[7].type = 0;
+    keystrokes[7].id = id;
+    keystrokes[7].function = removeTrackKeystroke;
     struct keystrokes *keys = malloc(sizeof(struct keystrokes));
     screen->screenKeystrokes = keys;
     screen->screenKeystrokes->keystrokeArray = keystrokes;
-    screen->screenKeystrokes->keystorkes = 2;
+    screen->screenKeystrokes->keystorkes = 8;
     struct mainMenuData *data = malloc(sizeof(struct mainMenuData));
     data->selectedWindow = 0;
+    data->selectedSection = 0;
+    data->selectedTrack = 0;
     data->sideBarSize = 50;
     screen->data = data;
     return screen;
