@@ -21,7 +21,7 @@ struct sequencerTrack {
     int pointBufferSize;
     float bpm;
     int id;
-    union point *point;
+    union point **point;
 };
 
 

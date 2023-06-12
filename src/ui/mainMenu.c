@@ -65,6 +65,23 @@ char **mainMenuContentRenderer(int height, int width, int id) {
         content[7 + sections * 2][x] = '-';
     }
 
+    //draw tracks
+    if(sections > 0) {
+        int trackDrawPos = data->sideBarSize + 10;
+        for (int track = 0; track < getSequanceTrackCount(getSection(data->selectedSection)); track++) {
+            for (int y = 5; y < height; y++) {
+                content[y][trackDrawPos] = '|';
+            }
+            content[5][trackDrawPos] = '+';
+            trackDrawPos += 10;
+        }
+        //draw selected track indicator
+        if(getSequanceTrackCount(getSection(data->selectedSection))) {
+            for(int i = 0; i < 9; i++) {
+                content[5][data->sideBarSize + 1 + i + data->selectedTrack * 10] = '.';
+            }
+        }
+    }
 
     return content;
 }
@@ -83,6 +100,7 @@ void deleteSectionKeystroke(int id) {
 void goDownSections(int id) {
     struct mainMenuData *data = getDataFromId(id);
     data->selectedSection += 1;
+    data->selectedTrack = 0;
     if(data->selectedSection > getSectionCount() - 1) data->selectedSection = 0;
 }
 
@@ -90,19 +108,26 @@ void goDownSections(int id) {
 void goUpSections(int id) {
     struct mainMenuData *data = getDataFromId(id);
     data->selectedSection -= 1;
+    data->selectedTrack = 0;
     if(data->selectedSection < 0) data->selectedSection = getSectionCount() - 1;
 }
 
 
 void goLeftTrack(int id) {
     struct mainMenuData *data = getDataFromId(id);
-    data->selectedTrack += 1;
+    if(getSectionCount()) {
+        data->selectedTrack += 1;
+        if(data->selectedTrack > getSequanceTrackCount(getSection(data->selectedSection)) - 1) data->selectedTrack = 0;
+    }
 }
 
 
 void goRightTrack(int id) {
     struct mainMenuData *data = getDataFromId(id);
-    data->selectedTrack -= 1;
+    if(getSectionCount()) {
+        data->selectedTrack -= 1;
+        if(data->selectedTrack < 0) data->selectedTrack = getSequanceTrackCount(getSection(data->selectedSection)) - 1;
+    }
 }
 
 

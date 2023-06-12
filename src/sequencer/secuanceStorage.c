@@ -93,3 +93,28 @@ void removeSequanceTrack(struct sequencerSection *section, int track) {
 int getSequanceTrackCount(struct sequencerSection *section) {
     return section->tracks;
 }
+
+
+//note related code
+void addNoteToTrack(struct sequencerTrack *track, int data) {
+    union point *point = malloc(sizeof(union point));
+    if(track->points == track->pointBufferSize) {
+        track->point = realloc(track->point, sizeof(union point *) * track->pointBufferSize * 2);
+        track->pointBufferSize *= 2;
+    }
+    track->point[track->points] = point;
+    track->points++;
+}
+
+
+void removeNoteFromTrack(struct sequencerTrack *track, int point) {
+    free(track->point[point]);
+    for(int i = point; i < track->points; i++) {
+        track->point[i] = track->point[i + 1];
+    }
+    track->points--;
+    if(track->points < track->pointBufferSize / 4) {
+        track->point = realloc(track->point, sizeof(union point *) * track->pointBufferSize / 2);
+        track->pointBufferSize /= 2;
+    }
+}
