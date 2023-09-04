@@ -1,1 +1,0 @@
-struct screen *mainMenuScreenIniter(int);
