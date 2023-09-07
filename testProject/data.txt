@@ -1,0 +1,7 @@
+Artist: Emilia Thorsen
+Last updated: 2023-09-04
+Sequances:
+testSequance.txt
+end
+Algorithms:
+end

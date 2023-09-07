@@ -5,10 +5,11 @@
 #include "./playBack/playBack.h"
 #include "./playBack/mixer.h"
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+#include "./parser/dataFileParser.h"
 
 #define SAMPLE_RATE (44100)
-
 
 enum {
     addsound,
@@ -23,7 +24,17 @@ enum {
 };
 
 
-int main() {
+int main(int argc, const char* argv[]) {
+
+    if(argc == 1) {
+        fprintf(stderr, "usage: algomusic [path to project directory]\n");
+        exit(64);
+    } else {
+        startParsing(argv[1]);
+    }
+
+
+
     soundFormat format;
     format.frameSize = SAMPLE_RATE;
     format.sampleRate = SAMPLE_RATE;
